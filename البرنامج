@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصتي الاستثمارية</title>
+    <!-- استيراد أيقونات FontAwesome لتصميم مميز -->
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        :root {
+            --bg-color: #121824;
+            --card-bg: #1e2538;
+            --primary: #4caf50;
+            --accent: #2196f3;
+            --text: #ffffff;
+            --text-dim: #a0aec0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text); padding-bottom: 70px; }
+        
+        /* شريط التنقل السفلي */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--card-bg);
+            display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #2d3748; z-index: 1000;
+        }
+        .nav-item { text-align: center; color: var(--text-dim); text-decoration: none; font-size: 12px; cursor: pointer; flex: 1; }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
+        .nav-item.active { color: var(--primary); }
+
+        /* الصفحات */
+        .page { display: none; padding: 15px; }
+        .page.active { display: block; }
+
+        /* الأزرار العامة والكروت */
+        .card { background-color: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #2d3748; }
+        .btn { background-color: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; text-align: center; margin-top: 10px; }
+        .btn-secondary { background-color: var(--accent); }
+
+        /* الصفحة الرئيسية */
+        .top-links { display: flex; justify-content: space-between; margin-bottom: 20px; gap: 10px; }
+        .top-links a { flex: 1; background: var(--card-bg); padding: 12px; border-radius: 10px; text-align: center; color: white; text-decoration: none; font-size: 13px; font-weight: bold; border: 1px solid #2d3748; }
+        .top-links a i { display: block; font-size: 18px; margin-bottom: 5px; }
+        .top-links .cs { color: #ff9800; } .top-links .tg { color: #0088cc; } .top-links .dl { color: #4caf50; }
+        
+        .product-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .product-img { width: 100%; height: 160px; background: #2d3748; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: var(--text-dim); }
+        .prod-meta { display: flex; justify-content: space-between; margin-top: 10px; font-size: 14px; color: var(--text-dim); }
+        .prod-meta span strong { color: white; }
+
+        /* صفحة حسابي والمحفظة */
+        .balance-box { text-align: center; padding: 25px; background: linear-gradient(135deg, #1e2538, #2a344d); }
+        .balance-num { font-size: 32px; font-weight: bold; color: var(--primary); margin: 10px 0; }
+        .action-btns { display: flex; gap: 10px; }
+        .log-section h3 { margin: 15px 0 10px 0; font-size: 16px; color: var(--text-dim); border-right: 3px solid var(--accent); padding-right: 8px; }
+        .log-item { display: flex; justify-content: space-between; padding: 10px; background: rgba(255,255,255,0.02); border-bottom: 1px solid #2d3748; font-size: 14px; }
+        
+        /* صفحة فريقي */
+        .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .team-box { background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; text-align: center; }
+        .team-box span { display: block; font-size: 18px; font-weight: bold; margin-top: 5px; }
+        .ref-link-box { display: flex; gap: 10px; margin-top: 10px; }
+        .ref-link-box input { flex: 1; background: #121824; border: 1px solid #2d3748; padding: 8px; color: white; border-radius: 6px; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <!-- 1. الصفحة الرئيسية -->
+    <div id="home" class="page active">
+        <div class="top-links">
+            <a href="https://t.me" class="cs"><i class="fas fa-headset"></i>خدمة العملاء</a>
+            <a href="https://t.me" class="tg"><i class="fab fa-telegram"></i>قناة التلجرام</a>
+            <a href="#" class="dl"><i class="fas fa-download"></i>تنزيل التطبيق</a>
+        </div>
+        
+        <h2>العروض الاستثمارية المتاحة</h2>
+        <div class="product-grid" id="products-list"></div>
+    </div>
+
+    <!-- 2. صفحة منتجاتي -->
+    <div id="my-products" class="page">
+        <h2>منتجاتي النشطة</h2>
+        <div id="purchased-list">
+            <p style="color: var(--text-dim); text-align: center; margin-top: 20px;">لم تقم بشراء أي منتج بعد.</p>
+        </div>
+    </div>
+
+    <!-- 3. صفحة فريقي -->
+    <div id="team" class="page">
+        <h2>تقرير ومكافآت الفريق</h2>
+        <div class="card">
+            <p>عمولة الإحالة: مستوى 1 (<strong>10%</strong>) | مستوى 2 (<strong>5%</strong>) | مستوى 3 (<strong>2%</strong>)</p>
+            <div class="ref-link-box">
+                <input type="text" id="refUrl" value="https://github.io" readonly>
+                <button class="btn" style="margin:0; width:auto; padding:8px 12px;" onclick="copyRef()">نسخ</button>
+            </div>
+        </div>
+        <div class="team-grid">
+            <div class="team-box">إجمالي عدد فريقي<span style="color: var(--accent);">14 عضو</span></div>
+            <div class="team-box">فريق فريقي<span>32 عضو</span></div>
+            <div class="team-box" style="grid-column: span 2;">إجمالي شحن الفريق<span style="color: var(--primary);">4,500 جنيه</span></div>
+        </div>
+    </div>
+
+    <!-- 4. صفحة حسابي -->
+    <div id="profile" class="page">
+        <div class="card balance-box">
+            <div style="font-size: 14px; color: var(--text-dim);"><i class="fas fa-phone-alt"></i> الحساب: <span id="user-phone">01234567890</span></div>
+            <div style="margin-top: 10px; font-size: 14px;">إجمالي الرصيد الخاص بك</div>
+            <div class="balance-num"><span id="user-balance">500</span> جنيه</div>
+            <div class="action-btns">
+                <button class="btn" onclick="triggerAction('شحن رصيد')"><i class="fas fa-wallet"></i> شحن الرصيد</button>
+                <button class="btn btn-secondary" onclick="triggerAction('سحب رصيد')"><i class="fas fa-money-check-alt"></i> سحب الرصيد</button>
+            </div>
+        </div>
+
+        <div class="log-section">
+            <h3><i class="fas fa-arrow-down"></i> سجل الشحن</h3>
+            <div id="deposit-log">
+                <div class="log-item"><span>شحن عبر فودافون كاش</span><span style="color:var(--primary);">+300 جنيه</span></div>
+            </div>
+            
+            <h3><i class="fas fa-arrow-up"></i> سجل السحب</h3>
+            <div id="withdraw-log">
+                <div class="log-item"><span>سحب رصيد ناجح</span><span style="color:red;">-100 جنيه</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- شريط التنقل السفلي الثابت -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchPage('home', this)"><i class="fas fa-home"></i>الرئيسية</div>
+        <div class="nav-item" onclick="switchPage('my-products', this)"><i class="fas fa-box-open"></i>منتجي</div>
+        <div class="nav-item" onclick="switchPage('team', this)"><i class="fas fa-users"></i>فريقي</div>
+        <div class="nav-item" onclick="switchPage('profile', this)"><i class="fas fa-user"></i>حسابي</div>
+    </div>
+
+    <!-- البرمجة الذكية لإدارة الصفحات والعدادات والتفاعل -->
+    <script>
+        // قاعدة بيانات المنتجات الافتراضية للشركة
+        const products = [
+            { id: 1, name: "الباقة البرونزية", price: 200, daily: 20, duration: 30, icon: "💎" },
+            { id: 2, name: "الباقة الفضية", price: 500, daily: 55, duration: 45, icon: "🚀" },
+            { id: 3, name: "الباقة الذهبية", price: 1000, daily: 120, duration: 60, icon: "👑" }
+        ];
+
+        // تهيئة بيانات العضو في ذاكرة الهاتف لكي لا تضيع مع التحديث
+        let userData = JSON.parse(localStorage.getItem('invest_user')) || {
+            balance: 500,
+            phone: "01" + Math.floor(10000000 + Math.random() * 90000000),
+            purchased: []
+        };
+
+        function saveState() {
+            localStorage.setItem('invest_user', JSON.stringify(userData));
+            document.getElementById('user-balance').innerText = userData.balance;
+            document.getElementById('user-phone').innerText = userData.phone;
+        }
+
+        // التبديل بين الصفحات الأربعة
+        function switchPage(pageId, element) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            element.classList.add('active');
+            if(pageId === 'my-products') renderMyProducts();
+        }
+
+        // عرض المنتجات في الصفحة الرئيسية
+        function renderProducts() {
+            const container = document.getElementById('products-list');
+            container.innerHTML = products.map(p => `
+                <div class="card">
+                    <div class="product-img">${p.icon}</div>
+                    <h3 style="margin-top:10px;">${p.name}</h3>
+                    <div class="prod-meta">
+                        <span>السعر: <strong>${p.price} ج.م</strong></span>
+                        <span>الربح اليومي: <strong>${p.daily} ج.م</strong></span>
+                        <span>المدة: <strong>${p.duration} يوم</strong></span>
+                    </div>
+                    <button class="btn" onclick="buyProduct(${p.id})">شراء العرض الآن</button>
